@@ -1,0 +1,464 @@
+<?php
+// Fetch menu items and testimonials from database
+$menuItems = [];
+$testimonials = [];
+
+// Since this is a simplified version, we'll use static data
+// In a full implementation, you would connect to the database here
+$menuItems = [
+    [
+        'id' => 1,
+        'name' => 'Espresso',
+        'description' => 'Ekstrak kopi pekat yang disajikan hangat dengan aroma yang khas',
+        'price' => 15000,
+        'image' => 'espresso.jpg'
+    ],
+    [
+        'id' => 2,
+        'name' => 'Cappuccino',
+        'description' => 'Paduan sempurna antara espresso, susu, dan busa susu yang lembut',
+        'price' => 20000,
+        'image' => 'cappuccino.jpg'
+    ],
+    [
+        'id' => 3,
+        'name' => 'Latte',
+        'description' => 'Espresso dengan susu steamed yang lembut dan sedikit foam di atasnya',
+        'price' => 22000,
+        'image' => 'latte.jpg'
+    ],
+    [
+        'id' => 4,
+        'name' => 'Americano',
+        'description' => 'Espresso yang dicampur dengan air panas, menghasilkan rasa yang seimbang',
+        'price' => 18000,
+        'image' => 'americano.jpg'
+    ],
+    [
+        'id' => 5,
+        'name' => 'Mocha',
+        'description' => 'Perpaduan sempurna antara espresso, cokelat, dan susu yang lembut',
+        'price' => 25000,
+        'image' => 'mocha.jpg'
+    ],
+    [
+        'id' => 6,
+        'name' => 'Cold Brew',
+        'description' => 'Kopi yang diseduh dingin selama 12 jam untuk hasil yang halus',
+        'price' => 23000,
+        'image' => 'coldbrew.jpg'
+    ]
+];
+
+$testimonials = [
+    [
+        'id' => 1,
+        'name' => 'Budi Santoso',
+        'position' => 'Pecinta Kopi',
+        'testimonial' => 'Kopi di sini benar-benar luar biasa! Saya selalu datang ke sini setiap pagi sebelum bekerja. Suasananya yang nyaman membuat saya betah berlama-lama.',
+        'rating' => 5
+    ],
+    [
+        'id' => 2,
+        'name' => 'Siti Rahayu',
+        'position' => 'Barista',
+        'testimonial' => 'Sebagai barista profesional, saya sangat menghargai kualitas biji kopi yang digunakan di sini. Proses seduhannya juga sangat presisi dan konsisten.',
+        'rating' => 5
+    ],
+    [
+        'id' => 3,
+        'name' => 'Ahmad Fauzi',
+        'position' => 'Pelanggan Setia',
+        'testimonial' => 'Tempat ini menjadi favorit keluarga kami. Selain kopinya yang enak, pelayanannya juga ramah dan harga sangat terjangkau untuk semua kalangan.',
+        'rating' => 4
+    ]
+];
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warung Kopikir - Nikmati Kopi Terbaik</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom styles -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            scroll-behavior: smooth;
+        }
+        
+        .coffee-bg {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .coffee-card:hover {
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+        
+        .testimonial-card {
+            transition: all 0.3s ease;
+        }
+        
+        .testimonial-card:hover {
+            transform: scale(1.05);
+        }
+    </style>
+    <link rel="stylesheet" href="assets/css/custom.css">
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation Bar -->
+    <nav id="navbar" class="fixed w-full bg-transparent shadow-md z-50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <i class="fas fa-mug-hot text-2xl text-amber-800 mr-2"></i>
+                        <span class="text-xl font-bold text-white">Warung Kopikir</span>
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#home" class="text-white hover:text-amber-300 font-medium nav-link">Home</a>
+                    <a href="#about" class="text-white hover:text-amber-300 font-medium nav-link">About</a>
+                    <a href="#menu" class="text-white hover:text-amber-300 font-medium nav-link">Menu</a>
+                    <a href="#products" class="text-white hover:text-amber-300 font-medium nav-link">Produk</a>
+                    <a href="#testimonials" class="text-white hover:text-amber-300 font-medium nav-link">Testimonials</a>
+                    <a href="#contact" class="text-white hover:text-amber-300 font-medium nav-link">Contact</a>
+                </div>
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-button" class="text-white hover:text-amber-300">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#home" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-amber-800 hover:bg-gray-50 nav-link">Home</a>
+                <a href="#about" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-amber-800 hover:bg-gray-50 nav-link">About</a>
+                <a href="#menu" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-amber-800 hover:bg-gray-50 nav-link">Menu</a>
+                <a href="#products" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-amber-800 hover:bg-gray-50 nav-link">Produk</a>
+                <a href="#testimonials" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-amber-800 hover:bg-gray-50 nav-link">Testimonials</a>
+                <a href="#contact" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-amber-800 hover:bg-gray-50 nav-link">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="coffee-bg h-screen flex items-center">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-4xl md:text-6xl font-bold text-white mb-6">Warung Kopikir</h1>
+            <p class="text-xl md:text-2xl text-amber-100 mb-10 max-w-3xl mx-auto">Nikmati secangkir kopi terbaik yang kami seduh dengan penuh cinta dan dedikasi</p>
+            <div class="space-x-4">
+                <a href="#menu" class="bg-amber-700 hover:bg-amber-800 text-white font-bold py-3 px-8 rounded-full text-lg transition duration-300">Lihat Menu</a>
+                <a href="#products" class="bg-transparent border-2 border-white hover:bg-white hover:text-amber-800 text-white font-bold py-3 px-8 rounded-full text-lg transition duration-300">Produk Kami</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Tentang Kami</h2>
+                <div class="w-20 h-1 bg-amber-700 mx-auto"></div>
+            </div>
+            
+            <div class="flex flex-col md:flex-row items-center gap-10">
+                <div class="md:w-1/2">
+                    <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80" alt="Our Coffee Shop" class="rounded-lg shadow-lg">
+                </div>
+                <div class="md:w-1/2">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Cerita Kami</h3>
+                    <p class="text-gray-600 mb-6">Warung Kopikir didirikan pada tahun 2015 dengan tujuan menyediakan kopi berkualitas tinggi untuk para pecinta kopi di seluruh Indonesia. Kami percaya bahwa secangkir kopi yang baik dapat membangun hubungan dan menciptakan kenangan indah.</p>
+                    <p class="text-gray-600 mb-6">Dengan biji kopi pilihan dari berbagai daerah di Indonesia, kami menghadirkan pengalaman kopi yang autentik dan nikmat. Setiap proses, mulai dari pemilihan biji hingga penyajian, dilakukan dengan penuh perhatian dan cinta.</p>
+                    <div class="grid grid-cols-2 gap-4 mt-8">
+                        <div class="flex items-center">
+                            <i class="fas fa-check-circle text-amber-700 text-xl mr-2"></i>
+                            <span class="text-gray-700">Biji Kopi Berkualitas</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-check-circle text-amber-700 text-xl mr-2"></i>
+                            <span class="text-gray-700">Proses Manual</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-check-circle text-amber-700 text-xl mr-2"></i>
+                            <span class="text-gray-700">Ramah Lingkungan</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-check-circle text-amber-700 text-xl mr-2"></i>
+                            <span class="text-gray-700">Harga Terjangkau</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section id="products" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Produk Kopi Kami</h2>
+                <div class="w-20 h-1 bg-amber-700 mx-auto"></div>
+                <p class="mt-4 text-gray-600 max-w-2xl mx-auto">Kopi berkualitas tinggi yang dipilih langsung dari perkebunan terbaik di Indonesia</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="bg-gray-50 rounded-lg p-6 text-center transition-all duration-300 hover:shadow-lg">
+                    <div class="w-24 h-24 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-seedling text-3xl text-amber-700"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Kopi Arabica</h3>
+                    <p class="text-gray-600">Kopi premium dengan rasa yang lembut dan aroma khas</p>
+                </div>
+                
+                <div class="bg-gray-50 rounded-lg p-6 text-center transition-all duration-300 hover:shadow-lg">
+                    <div class="w-24 h-24 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-mountain text-3xl text-amber-700"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Kopi Robusta</h3>
+                    <p class="text-gray-600">Kopi dengan cita rasa kuat dan kandungan kafein tinggi</p>
+                </div>
+                
+                <div class="bg-gray-50 rounded-lg p-6 text-center transition-all duration-300 hover:shadow-lg">
+                    <div class="w-24 h-24 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-leaf text-3xl text-amber-700"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Kopi Liberika</h3>
+                    <p class="text-gray-600">Kopi langka dengan aroma buah yang unik dan menarik</p>
+                </div>
+                
+                <div class="bg-gray-50 rounded-lg p-6 text-center transition-all duration-300 hover:shadow-lg">
+                    <div class="w-24 h-24 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-globe-asia text-3xl text-amber-700"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Kopi Flores</h3>
+                    <p class="text-gray-600">Kopi spesial dari pulau Flores dengan rasa yang seimbang</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Menu Section -->
+    <section id="menu" class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Menu Kami</h2>
+                <div class="w-20 h-1 bg-amber-700 mx-auto"></div>
+                <p class="mt-4 text-gray-600 max-w-2xl mx-auto">Nikmati berbagai varian kopi spesial yang kami siapkan dengan bahan-bahan alami dan berkualitas tinggi</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <?php if (!empty($menuItems)): ?>
+                    <?php foreach ($menuItems as $item): ?>
+                        <div class="coffee-card bg-white rounded-lg shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl">
+                            <div class="bg-gray-200 border-2 border-dashed rounded-xl w-full h-56 flex items-center justify-center">
+                                <i class="fas fa-mug-hot text-5xl text-amber-700"></i>
+                            </div>
+                            <div class="p-6">
+                                <div class="flex justify-between items-center mb-2">
+                                    <h3 class="text-xl font-bold text-gray-800"><?php echo htmlspecialchars($item['name']); ?></h3>
+                                    <span class="text-amber-700 font-bold text-lg">Rp <?php echo number_format($item['price'], 0, ',', '.'); ?></span>
+                                </div>
+                                <p class="text-gray-600 mt-2"><?php echo htmlspecialchars($item['description']); ?></p>
+                                <div class="mt-4">
+                                    <button class="w-full bg-amber-700 hover:bg-amber-800 text-white font-medium py-2 px-4 rounded-lg transition duration-300">
+                                        Pesan Sekarang
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <div class="col-span-3 text-center py-10">
+                        <p class="text-gray-600">No menu items available at the moment.</p>
+                    </div>
+                <?php endif; ?>
+            </div>
+            
+            <div class="text-center mt-12">
+                <a href="menu.php" class="inline-block bg-amber-700 hover:bg-amber-800 text-white font-bold py-3 px-8 rounded-full transition duration-300">
+                    Lihat Semua Menu
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Apa Kata Pelanggan Kami</h2>
+                <div class="w-20 h-1 bg-amber-700 mx-auto"></div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <?php foreach ($testimonials as $testimonial): ?>
+                <div class="testimonial-card bg-gray-50 p-8 rounded-lg shadow-md">
+                    <div class="flex items-center mb-4">
+                        <div class="text-amber-500">
+                            <?php for($i = 0; $i < 5; $i++): ?>
+                                <?php if($i < $testimonial['rating']): ?>
+                                    <i class="fas fa-star"></i>
+                                <?php else: ?>
+                                    <i class="far fa-star"></i>
+                                <?php endif; ?>
+                            <?php endfor; ?>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 italic mb-6">"<?php echo htmlspecialchars($testimonial['testimonial']); ?>"</p>
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 rounded-full bg-gray-300 mr-4"></div>
+                        <div>
+                            <h4 class="font-bold text-gray-800"><?php echo htmlspecialchars($testimonial['name']); ?></h4>
+                            <p class="text-gray-600 text-sm"><?php echo htmlspecialchars($testimonial['position']); ?></p>
+                        </div>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Hubungi Kami</h2>
+                <div class="w-20 h-1 bg-amber-700 mx-auto"></div>
+                <p class="mt-4 text-gray-600 max-w-2xl mx-auto">Punya pertanyaan atau ingin memesan? Jangan ragu untuk menghubungi kami!</p>
+            </div>
+            
+            <div class="flex flex-col md:flex-row gap-10">
+                <div class="md:w-1/2">
+                    <form id="contactForm" class="bg-white p-8 rounded-lg shadow-md">
+                        <div class="mb-6">
+                            <label for="name" class="block text-gray-700 font-medium mb-2">Nama Lengkap</label>
+                            <input type="text" id="name" name="name" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-700" placeholder="Masukkan nama Anda" required>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <label for="email" class="block text-gray-700 font-medium mb-2">Email</label>
+                            <input type="email" id="email" name="email" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-700" placeholder="Masukkan email Anda" required>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <label for="message" class="block text-gray-700 font-medium mb-2">Pesan</label>
+                            <textarea id="message" name="message" rows="5" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-700" placeholder="Tulis pesan Anda di sini..." required></textarea>
+                        </div>
+                        
+                        <button type="submit" class="w-full bg-amber-700 hover:bg-amber-800 text-white font-bold py-3 px-4 rounded-lg transition duration-300">Kirim Pesan</button>
+                    </form>
+                </div>
+                
+                <div class="md:w-1/2">
+                    <div class="bg-white p-8 rounded-lg shadow-md h-full">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-6">Informasi Kontak</h3>
+                        
+                        <div class="space-y-6">
+                            <div class="flex items-start">
+                                <div class="text-amber-700 mr-4 mt-1">
+                                    <i class="fas fa-map-marker-alt text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-gray-800">Alamat</h4>
+                                    <p class="text-gray-600">Jl. Raya Kopi No. 123, Jakarta Selatan, Indonesia</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="text-amber-700 mr-4 mt-1">
+                                    <i class="fas fa-phone-alt text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-gray-800">Telepon</h4>
+                                    <p class="text-gray-600">+62 21 1234 5678</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="text-amber-700 mr-4 mt-1">
+                                    <i class="fas fa-envelope text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-gray-800">Email</h4>
+                                    <p class="text-gray-600">info@warungkopikita.com</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="text-amber-700 mr-4 mt-1">
+                                    <i class="fas fa-clock text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-gray-800">Jam Operasional</h4>
+                                    <p class="text-gray-600">Senin - Minggu: 07:00 - 22:00 WIB</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-10">
+                            <h4 class="font-bold text-gray-800 mb-4">Ikuti Kami</h4>
+                            <div class="flex space-x-4">
+                                <a href="#" class="w-10 h-10 rounded-full bg-amber-700 flex items-center justify-center text-white hover:bg-amber-800 transition duration-300">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                                <a href="#" class="w-10 h-10 rounded-full bg-amber-700 flex items-center justify-center text-white hover:bg-amber-800 transition duration-300">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                                <a href="#" class="w-10 h-10 rounded-full bg-amber-700 flex items-center justify-center text-white hover:bg-amber-800 transition duration-300">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                                <a href="#" class="w-10 h-10 rounded-full bg-amber-700 flex items-center justify-center text-white hover:bg-amber-800 transition duration-300">
+                                    <i class="fab fa-whatsapp"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-6 md:mb-0">
+                    <div class="flex items-center">
+                        <i class="fas fa-mug-hot text-2xl text-amber-500 mr-2"></i>
+                        <span class="text-xl font-bold">Warung Kopikir</span>
+                    </div>
+                    <p class="mt-2 text-gray-400">Menyajikan kopi terbaik sejak 2015</p>
+                </div>
+                
+                <div class="flex space-x-6">
+                    <a href="#home" class="text-gray-300 hover:text-white">Home</a>
+                    <a href="#about" class="text-gray-300 hover:text-white">About</a>
+                    <a href="#menu" class="text-gray-300 hover:text-white">Menu</a>
+                    <a href="#contact" class="text-gray-300 hover:text-white">Contact</a>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2023 Warung Kopikir. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Custom JavaScript -->
+    <script src="assets/js/main.js"></script>
+</body>
+</html>
